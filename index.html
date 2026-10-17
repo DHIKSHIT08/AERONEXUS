@@ -2,536 +2,470 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#090a0d">
-  <title>AERONEX | Aircraft Systems Command</title>
-  <style>
-    :root {
-      --bg: #090a0d;
-      --panel: #121419;
-      --border: #292c34;
-      --gold: #e8b84b;
-      --red: #ff4d57;
-      --text: #f2f3f5;
-      --muted: #8d929e;
-      --green: #5ee0a0;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: Inter, "Segoe UI", Arial, sans-serif;
-    }
-
-    button { font: inherit; cursor: pointer; }
-
-    .layout {
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: 235px minmax(0, 1fr);
-    }
-
-    aside {
-      padding: 26px 16px;
-      border-right: 1px solid var(--border);
-      background: #0d0f13;
-    }
-
-    .brand {
-      font-size: 23px;
-      font-weight: 900;
-      letter-spacing: 3px;
-      color: var(--gold);
-      padding: 8px 10px 28px;
-    }
-
-    .brand small {
-      display: block;
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 9px;
-      letter-spacing: 2px;
-    }
-
-    .nav-label {
-      color: #686e7b;
-      font-size: 10px;
-      letter-spacing: 2px;
-      padding: 18px 12px 10px;
-    }
-
-    .nav-btn {
-      width: 100%;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      text-align: left;
-      padding: 12px;
-      margin: 3px 0;
-      color: #aeb3be;
-      background: transparent;
-      border: 1px solid transparent;
-      border-radius: 8px;
-    }
-
-    .nav-btn:hover, .nav-btn.active {
-      color: var(--gold);
-      background: #211d13;
-      border-color: #514020;
-    }
-
-    .sidebar-note {
-      margin: 36px 5px 0;
-      padding: 14px;
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.7;
-    }
-
-    main { min-width: 0; padding: 28px clamp(16px, 3vw, 42px); }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
-      padding-bottom: 24px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .eyebrow {
-      color: var(--gold);
-      font-size: 10px;
-      letter-spacing: 2px;
-    }
-
-    h1 { margin: 8px 0; font-size: clamp(23px, 3vw, 34px); }
-    .subtitle { color: var(--muted); font-size: 13px; }
-
-    .demo-tag {
-      padding: 9px 12px;
-      color: var(--green);
-      background: #10251d;
-      border: 1px solid #28543f;
-      border-radius: 6px;
-      font-size: 11px;
-      letter-spacing: 1px;
-    }
-
-    .section-title {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: center;
-      margin: 28px 0 14px;
-    }
-
-    h2 { margin: 0; font-size: 16px; }
-    .muted { color: var(--muted); font-size: 12px; }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
-    }
-
-    .card, .panel {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 11px;
-    }
-
-    .card { padding: 17px; }
-    .card-label { color: var(--muted); font-size: 12px; }
-    .metric { margin: 14px 0 8px; font-size: 27px; font-weight: 750; }
-    .gold { color: var(--gold); }
-    .green { color: var(--green); }
-    .red { color: var(--red); }
-
-    .mini-status { font-size: 11px; color: var(--muted); }
-
-    .content-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(260px, 1fr);
-      gap: 15px;
-      margin-top: 18px;
-    }
-
-    .panel { padding: 20px; min-width: 0; }
-    .panel h2 { margin-bottom: 8px; }
-    .panel-description { color: var(--muted); font-size: 12px; line-height: 1.6; }
-
-    .aircraft {
-      position: relative;
-      overflow: hidden;
-      min-height: 245px;
-      margin-top: 18px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background:
-        radial-gradient(ellipse at center, #292316 0%, #15151a 42%, #101116 75%);
-      border: 1px solid #302b20;
-      border-radius: 8px;
-    }
-
-    .aircraft::before, .aircraft::after {
-      content: "";
-      position: absolute;
-      background: #26232a;
-    }
-
-    .aircraft::before {
-      width: 90%;
-      height: 1px;
-      left: 5%;
-      top: 50%;
-    }
-
-    .aircraft::after {
-      width: 1px;
-      height: 85%;
-      left: 50%;
-      top: 7%;
-    }
-
-    .plane {
-      position: relative;
-      z-index: 1;
-      font-size: 92px;
-      color: var(--gold);
-      filter: drop-shadow(0 0 20px #d8a53544);
-      transform: rotate(-90deg);
-    }
-
-    .aircraft-caption {
-      position: absolute;
-      bottom: 13px;
-      left: 14px;
-      color: var(--muted);
-      font-size: 10px;
-      letter-spacing: 1px;
-    }
-
-    .system-row {
-      padding: 15px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .system-row:last-child { border-bottom: 0; }
-    .system-top { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; }
-    .bar { height: 5px; margin-top: 10px; background: #292c34; border-radius: 9px; overflow: hidden; }
-    .bar span { display: block; height: 100%; background: var(--gold); border-radius: 9px; }
-
-    .controls { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
-
-    .action {
-      border: 1px solid #665026;
-      background: #241e12;
-      color: var(--gold);
-      padding: 10px 13px;
-      border-radius: 6px;
-      font-size: 12px;
-    }
-
-    .action:hover { background: #362b16; }
-    .action.secondary { color: var(--text); border-color: var(--border); background: #17191f; }
-
-    .log {
-      margin-top: 18px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 12px;
-      line-height: 1.7;
-    }
-
-    .log:last-child { border-bottom: 0; }
-    .log time { display: block; color: var(--muted); font-size: 10px; }
-    .footer { margin: 26px 0 6px; color: #737986; font-size: 10px; line-height: 1.7; }
-
-    @media (max-width: 1000px) {
-      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .content-grid { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 650px) {
-      .layout { grid-template-columns: 1fr; }
-      aside { padding: 12px; border-right: 0; border-bottom: 1px solid var(--border); }
-      .brand { padding-bottom: 10px; }
-      .nav-label, .sidebar-note { display: none; }
-      nav { display: flex; gap: 5px; overflow-x: auto; }
-      .nav-btn { width: auto; flex: 0 0 auto; padding: 10px; }
-      main { padding: 20px 14px; }
-      .cards { gap: 9px; }
-      .card { padding: 13px; }
-      .metric { font-size: 23px; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080704">
+<title>AERONEXUS | Aircraft Systems Command Centre</title>
+<style>
+:root {
+  --gold:#ffd447;
+  --gold2:#ffad19;
+  --red:#ff303d;
+  --green:#35ef91;
+  --bg:#070705;
+  --panel:#100e09;
+  --line:#44320e;
+  --muted:#a9a394;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:radial-gradient(ellipse at 40% 25%,#211604 0,#090806 48%,#030303 100%);
+  color:#f5edcf;font-family:Inter,Segoe UI,Arial,sans-serif;
+  min-height:100vh
+}
+button{font:inherit;cursor:pointer}
+button:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.topbar{
+  min-height:76px;display:flex;align-items:center;justify-content:space-between;
+  gap:16px;padding:12px 22px;border-bottom:1px solid var(--line);
+  background:#080704ed;position:sticky;top:0;z-index:5
+}
+.brand{display:flex;align-items:center;gap:12px;min-width:210px}
+.brandmark{font-size:38px;color:var(--gold);text-shadow:0 0 18px #ffad19}
+.brand h1{margin:0;letter-spacing:4px;font-size:24px;color:var(--gold)}
+.brand small{font-size:9px;letter-spacing:2px;color:#c8b989}
+nav{display:flex;gap:5px;flex-wrap:wrap}
+.navbtn{
+  background:transparent;border:1px solid transparent;color:#c5bda7;
+  padding:10px 13px;border-radius:8px
+}
+.navbtn:hover,.navbtn.active{
+  color:var(--gold);border-color:#71470c;background:#211506;
+  box-shadow:inset 0 -2px var(--red)
+}
+.online{font-size:12px;white-space:nowrap}
+.dot{display:inline-block;width:8px;height:8px;background:var(--green);border-radius:50%;margin-right:6px}
+main{max-width:1800px;margin:auto;padding:16px}
+.grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(290px,.8fr);gap:14px}
+.panel{
+  min-width:0;background:linear-gradient(140deg,#151108ed,#080807f5);
+  border:1px solid var(--line);border-radius:13px;padding:16px;
+  box-shadow:0 0 24px #0008,inset 0 1px #ffda4010
+}
+.panel h2,.panel h3{margin:0 0 12px;color:var(--gold);font-size:14px;letter-spacing:1px}
+.eyebrow{font-size:10px;letter-spacing:2px;color:var(--red);margin-bottom:8px}
+.hero{position:relative;overflow:hidden;min-height:350px}
+.hero-layout{display:grid;grid-template-columns:180px minmax(0,1fr);gap:12px;align-items:center}
+.aircraft-info h2{font-size:24px;color:#fff3c4;line-height:1.2}
+.aircraft-info p{font-size:12px;color:var(--muted);margin:9px 0}
+.aircraft-info strong{color:#fff0b0}
+.status{
+  display:inline-block;border:1px solid #287b48;border-radius:7px;
+  color:var(--green);padding:8px 10px;font-size:11px;margin-top:10px
+}
+.plane-stage{
+  position:relative;min-height:235px;display:flex;align-items:center;
+  overflow:hidden;perspective:800px
+}
+.scanline{
+  position:absolute;inset:0;opacity:.24;
+  background:linear-gradient(transparent 49%,#ffce3414 50%,transparent 51%);
+  background-size:100% 8px;pointer-events:none
+}
+.plane{
+  position:relative;width:100%;font-size:clamp(75px,10vw,145px);
+  text-align:center;filter:drop-shadow(0 0 8px #ffbe37)
+    drop-shadow(0 0 25px #b95006);
+  transform:rotate(-9deg);animation:flight 5s ease-in-out infinite;
+  z-index:1
+}
+.plane:after{
+  content:"757";position:absolute;left:50%;top:58%;
+  transform:translate(-50%,-50%) rotate(9deg);font-size:16px;
+  letter-spacing:7px;color:var(--gold);opacity:.8
+}
+@keyframes flight{
+  0%,100%{transform:translateY(3px) rotate(-9deg)}
+  50%{transform:translateY(-12px) rotate(-6deg)}
+}
+.orbit{
+  position:absolute;width:220px;height:220px;border:1px solid #ffbd3030;
+  border-radius:50%;left:50%;top:50%;transform:translate(-50%,-50%)
+}
+.orbit:before,.orbit:after{
+  content:"";position:absolute;inset:22px;border:1px dashed #ff40384a;border-radius:50%
+}
+.orbit:after{inset:55px;border-color:#ffcf3544}
+.callout{
+  position:absolute;font-size:10px;background:#100c07df;
+  border:1px solid #624411;border-radius:6px;padding:6px 8px;color:var(--gold);
+  z-index:2
+}
+.c1{left:4%;top:8%}.c2{right:4%;top:12%}.c3{right:7%;bottom:9%}
+.c4{left:6%;bottom:9%}
+.side-stack{display:grid;gap:14px;align-content:start}
+.metric-list{display:grid;gap:12px}
+.metric{display:grid;grid-template-columns:1fr auto;gap:5px;font-size:12px}
+.metric span{color:var(--muted)}
+.metric strong{color:#fff0bc}
+.bar{height:5px;border-radius:10px;background:#302313;overflow:hidden;grid-column:1/-1}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--red),var(--gold));transition:width .4s}
+.systems{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:14px}
+.system-card{position:relative;overflow:hidden}
+.system-card .value{font-size:25px;font-weight:700;color:#fff3c9;margin:8px 0}
+.system-card .unit{font-size:11px;color:var(--muted)}
+.state{font-size:10px;color:var(--green)}
+.gauge{
+  width:84px;height:84px;border-radius:50%;margin:10px auto;
+  display:grid;place-items:center;position:relative;
+  background:conic-gradient(var(--gold) var(--pct,75%),#342717 0);
+}
+.gauge:before{content:"";position:absolute;inset:7px;border-radius:50%;background:#100e09}
+.gauge strong{position:relative;font-size:17px;color:#fff1b0}
+.system-card{text-align:center}
+.lower{display:grid;grid-template-columns:1fr 1.25fr;gap:14px;margin-top:14px}
+.schematic{width:100%;display:block}
+.schematic path,.schematic line,.schematic ellipse{
+  stroke:var(--gold);fill:none;stroke-width:1.5
+}
+.schematic .redline{stroke:var(--red)}
+.schematic .greenline{stroke:var(--green)}
+.ai-result{
+  padding:12px;border:1px solid #3c3219;background:#0a0a07;border-radius:9px;
+  font-size:13px;line-height:1.7
+}
+.ai-result strong{color:var(--green)}
+.actions{display:grid;gap:8px}
+.action{
+  text-align:left;background:#141008;color:#f9e8b0;border:1px solid #624411;
+  border-radius:7px;padding:11px 12px;font-size:12px
+}
+.action:hover{border-color:var(--gold);background:#281b07}
+.action.danger{border-color:#8c1f29;color:#ff737a}
+.action.danger:hover{background:#310b0d}
+.action.primary{border-color:#c08a19;color:var(--gold)}
+.log-list{display:grid;gap:8px}
+.log{padding:10px;border:1px solid #302718;border-radius:7px;font-size:12px;color:#c8c0ad}
+.log time{color:var(--gold);margin-right:10px}
+.content-page{display:none}
+.content-page.active{display:block}
+.setting-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid #302718;font-size:13px}
+footer{
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  padding:18px 22px;border-top:1px solid var(--line);color:#9c8c65;font-size:11px
+}
+.toast{
+  position:fixed;right:20px;bottom:20px;z-index:10;max-width:340px;
+  padding:14px 18px;border-radius:9px;background:#171006;
+  border:1px solid var(--gold);color:#fff0b7;box-shadow:0 0 25px #000;
+  display:none
+}
+@media(max-width:1050px){
+  .topbar{flex-wrap:wrap}.brand{min-width:0}nav{order:3;width:100%;overflow-x:auto;flex-wrap:nowrap}
+  .navbtn{white-space:nowrap}.systems{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid{grid-template-columns:1fr}
+}
+@media(max-width:650px){
+  main{padding:9px}.topbar{padding:12px}.brand h1{font-size:19px}
+  .brand small{font-size:8px}.online{display:none}
+  .hero-layout{grid-template-columns:1fr}.aircraft-info p{display:inline-block;margin-right:10px}
+  .plane-stage{min-height:205px}.plane{font-size:100px}
+  .lower{grid-template-columns:1fr}.systems{gap:8px}
+  .panel{padding:12px}.aircraft-info h2{font-size:21px}
+  footer{padding:14px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{animation:none!important;scroll-behavior:auto!important;transition:none!important}
+}
+</style>
 </head>
 <body>
-  <div class="layout">
-    <aside>
-      <div class="brand">AERONEX<small>AVIATION SYSTEMS LAB</small></div>
+<header class="topbar">
+  <div class="brand">
+    <div class="brandmark">▲</div>
+    <div><h1>AERONEX</h1><small>AIRCRAFT SYSTEMS OPERATIONS</small></div>
+  </div>
+  <nav aria-label="Main navigation">
+    <button class="navbtn active" data-page="overview">⌂ Overview</button>
+    <button class="navbtn" data-page="systems">⚙ Systems</button>
+    <button class="navbtn" data-page="flightdeck">✈ Flight Deck</button>
+    <button class="navbtn" data-page="analysis">⌘ AI Analysis</button>
+    <button class="navbtn" data-page="logs">▤ Event Logs</button>
+    <button class="navbtn" data-page="settings">⚙ Settings</button>
+  </nav>
+  <div class="online"><span class="dot"></span>Simulation Online</div>
+</header>
 
-      <div class="nav-label">COMMAND</div>
-      <nav aria-label="Main navigation">
-        <button class="nav-btn active" data-page="Overview">◈ Overview</button>
-        <button class="nav-btn" data-page="Aircraft Systems">✈ Aircraft Systems</button>
-        <button class="nav-btn" data-page="AI Analysis">⌘ AI Analysis</button>
-        <button class="nav-btn" data-page="Event Logs">≡ Event Logs</button>
-      </nav>
-
-      <div class="nav-label">PROJECT</div>
-      <nav aria-label="Project navigation">
-        <button class="nav-btn" data-page="About">ⓘ About AERONEX</button>
-      </nav>
-
-      <div class="sidebar-note">
-        <span class="gold">● SIMULATION MODE</span><br>
-        All readings and controls are virtual demo data. No real aircraft connection.
+<main>
+<section class="content-page active" id="overview">
+  <div class="grid">
+    <div class="panel hero">
+      <div class="eyebrow">◈ AIRCRAFT OPERATIONS / DEMO</div>
+      <div class="hero-layout">
+        <div class="aircraft-info">
+          <h2>BOEING 757-200</h2>
+          <p>REGISTRATION: <strong>N757AX</strong></p>
+          <p>FLIGHT: <strong>AX-204 (DEMO)</strong></p>
+          <p>ALTITUDE: <strong id="altitude">35,000 ft</strong></p>
+          <p>AIRSPEED: <strong id="speed">450 kts</strong></p>
+          <p>RANGE: <strong>5,200 nm</strong></p>
+          <div class="status" id="mainStatus">✓ SYSTEMS NOMINAL</div>
+        </div>
+        <div class="plane-stage" aria-label="Animated aircraft illustration">
+          <div class="orbit"></div><div class="scanline"></div>
+          <div class="callout c1">● AVIONICS<br>ONLINE</div>
+          <div class="callout c2">● FLIGHT CONTROLS<br>NORMAL</div>
+          <div class="callout c3">● FUEL SYSTEM<br>NORMAL</div>
+          <div class="callout c4">● ENGINES<br>NOMINAL</div>
+          <div class="plane" role="img" aria-label="Stylized Boeing 757 demo aircraft">✈</div>
+        </div>
       </div>
-    </aside>
+    </div>
 
-    <main>
-      <header class="topbar">
-        <div>
-          <div class="eyebrow">AIRCRAFT OPERATIONS / DEMO ENVIRONMENT</div>
-          <h1 id="page-title">Command Overview</h1>
-          <div class="subtitle">Aircraft systems monitoring and simulated anomaly insights.</div>
+    <div class="side-stack">
+      <div class="panel">
+        <h2>◉ LIVE TELEMETRY — SIMULATED</h2>
+        <div class="metric-list">
+          <div class="metric"><span>Altitude</span><strong id="altRead">35,000 ft</strong><div class="bar"><i style="width:78%"></i></div></div>
+          <div class="metric"><span>Airspeed</span><strong id="speedRead">450 kts</strong><div class="bar"><i style="width:72%"></i></div></div>
+          <div class="metric"><span>Mach</span><strong id="mach">0.78</strong><div class="bar"><i style="width:78%"></i></div></div>
+          <div class="metric"><span>Heading</span><strong id="heading">089°</strong><div class="bar"><i style="width:25%"></i></div></div>
+          <div class="metric"><span>Vertical speed</span><strong id="vertical">0 ft/min</strong><div class="bar"><i style="width:50%"></i></div></div>
         </div>
-        <div class="demo-tag">● OFFLINE DEMO</div>
-      </header>
-
-      <section id="overview-page">
-        <div class="section-title">
-          <h2>System Overview</h2>
-          <span class="muted" id="last-updated">Demo data initialized</span>
+      </div>
+      <div class="panel">
+        <h2>QUICK ACTIONS</h2>
+        <div class="actions">
+          <button class="action danger" id="anomalyBtn">⚠ Simulate Anomaly</button>
+          <button class="action primary" id="refreshBtn">⟳ Refresh Demo Data</button>
+          <button class="action" id="resetBtn">↻ Reset Simulation</button>
         </div>
-
-        <div class="cards">
-          <article class="card">
-            <div class="card-label">Aircraft Status</div>
-            <div class="metric green" id="aircraft-status">NOMINAL</div>
-            <div class="mini-status">Virtual aircraft ANX-01</div>
-          </article>
-          <article class="card">
-            <div class="card-label">Engine Temperature</div>
-            <div class="metric" id="engine-temp">680°C</div>
-            <div class="mini-status">Simulated sensor reading</div>
-          </article>
-          <article class="card">
-            <div class="card-label">Fuel Quantity</div>
-            <div class="metric" id="fuel-value">74%</div>
-            <div class="mini-status">Virtual tank estimate</div>
-          </article>
-          <article class="card">
-            <div class="card-label">Electrical Bus</div>
-            <div class="metric green" id="electrical-status">ONLINE</div>
-            <div class="mini-status">Simulated power system</div>
-          </article>
-        </div>
-
-        <div class="content-grid">
-          <section class="panel">
-            <h2>Aircraft Systems Monitor</h2>
-            <div class="panel-description">Illustrative aircraft graphic and virtual subsystem readings.</div>
-
-            <div class="aircraft">
-              <div class="plane" aria-label="Aircraft symbol">✈</div>
-              <div class="aircraft-caption">ANX-01 / VIRTUAL TEST PLATFORM</div>
-            </div>
-
-            <div class="controls">
-              <button class="action" id="refresh-btn">↻ Refresh Demo Data</button>
-              <button class="action secondary" id="anomaly-btn">⚠ Simulate Anomaly</button>
-              <button class="action secondary" id="reset-btn">Reset Simulation</button>
-            </div>
-          </section>
-
-          <section class="panel">
-            <h2>Subsystem Telemetry</h2>
-            <div class="panel-description">Generated values for demonstration only.</div>
-
-            <div class="system-row">
-              <div class="system-top"><span>Engine temperature</span><strong id="engine-label">680°C</strong></div>
-              <div class="bar"><span id="engine-bar" style="width:68%"></span></div>
-            </div>
-            <div class="system-row">
-              <div class="system-top"><span>Fuel quantity</span><strong id="fuel-label">74%</strong></div>
-              <div class="bar"><span id="fuel-bar" style="width:74%"></span></div>
-            </div>
-            <div class="system-row">
-              <div class="system-top"><span>Cabin pressure index</span><strong id="cabin-label">82%</strong></div>
-              <div class="bar"><span id="cabin-bar" style="width:82%"></span></div>
-            </div>
-            <div class="system-row">
-              <div class="system-top"><span>Electrical load</span><strong id="electric-label">61%</strong></div>
-              <div class="bar"><span id="electric-bar" style="width:61%"></span></div>
-            </div>
-          </section>
-        </div>
-
-        <div class="content-grid">
-          <section class="panel">
-            <h2>AI-Style System Analysis</h2>
-            <div class="panel-description">Rule-based demo explanations; not certified aircraft diagnostics.</div>
-            <div id="analysis-result" class="log">
-              <span class="green">● NOMINAL</span><br>
-              Simulated values are within this demo's example thresholds.
-            </div>
-          </section>
-
-          <section class="panel">
-            <h2>Recent Event Logs</h2>
-            <div class="panel-description">Activity generated inside this browser demo.</div>
-            <div id="event-logs">
-              <div class="log"><span class="green">SYSTEM READY</span><time>Startup · Demo environment</time></div>
-              <div class="log">Telemetry dashboard initialized<time>Initial event</time></div>
-            </div>
-          </section>
-        </div>
-      </section>
-
-      <section id="other-page" class="panel" hidden style="margin-top:24px">
-        <h2 id="other-title">Project Information</h2>
-        <div id="other-content" class="panel-description" style="margin-top:14px"></div>
-      </section>
-
-      <footer class="footer">
-        AERONEX is an educational frontend simulation. It does not connect to aircraft, avionics, flight-control systems, or live operational data. Never use this demo for real-world flight decisions.
-      </footer>
-    </main>
+      </div>
+    </div>
   </div>
 
-  <script>
-    const initial = { engine: 680, fuel: 74, cabin: 82, electric: 61 };
-    let data = { ...initial };
-    let anomaly = false;
-    const logs = document.getElementById("event-logs");
+  <div class="systems">
+    <div class="panel system-card">
+      <h3>ENGINE 1</h3><div class="gauge" id="gauge1"><strong id="n1">92%</strong></div>
+      <div class="value" id="egt1">642°C</div><div class="unit">Exhaust gas temperature</div>
+      <p class="state" id="engine1state">● NORMAL</p>
+    </div>
+    <div class="panel system-card">
+      <h3>ENGINE 2</h3><div class="gauge" id="gauge2"><strong id="n2">91%</strong></div>
+      <div class="value" id="egt2">658°C</div><div class="unit">Exhaust gas temperature</div>
+      <p class="state" id="engine2state">● NORMAL</p>
+    </div>
+    <div class="panel system-card">
+      <h3>FUEL SYSTEM</h3><div class="gauge"><strong id="fuelPct">76%</strong></div>
+      <div class="value" id="fuel">12,300 kg</div><div class="unit">Simulated total fuel</div>
+      <p class="state">● DEMO VALUE</p>
+    </div>
+    <div class="panel system-card">
+      <h3>HYDRAULICS</h3><div class="gauge"><strong id="hydPct">100%</strong></div>
+      <div class="value" id="hyd">3,000 psi</div><div class="unit">Simulated system pressure</div>
+      <p class="state" id="hydState">● NORMAL</p>
+    </div>
+  </div>
 
-    function addLog(message, type = "") {
-      const item = document.createElement("div");
-      item.className = "log";
-      const label = document.createElement("span");
-      label.textContent = message;
-      if (type) label.className = type;
-      const time = document.createElement("time");
-      time.textContent = new Date().toLocaleTimeString() + " · Browser demo";
-      item.append(label, time);
-      logs.prepend(item);
-      while (logs.children.length > 6) logs.lastElementChild.remove();
-    }
+  <div class="lower">
+    <div class="panel">
+      <h2>✧ AIRCRAFT SYSTEMS SCHEMATIC</h2>
+      <svg class="schematic" viewBox="0 0 600 220" role="img" aria-label="Simplified illustrative aircraft system schematic">
+        <path d="M30 111 L95 95 L255 97 L365 73 L490 37 L540 35 L504 79 L389 116 L540 150 L500 159 L345 132 L270 130 L160 159 L117 155 L168 118 L90 119 Z"/>
+        <path class="redline" d="M60 111 L270 111 L350 122 L470 149 M270 111 L310 157 L370 157"/>
+        <path class="greenline" d="M100 112 L220 112 L270 126 L405 115 L490 79"/>
+        <path d="M210 106 L170 66 L190 64 L280 104 M210 118 L173 153 L194 155 L285 123"/>
+        <ellipse cx="325" cy="123" rx="25" ry="9" class="redline"/>
+        <ellipse cx="366" cy="124" rx="25" ry="9" class="redline"/>
+        <path d="M90 111 L72 104 L44 110 L72 119 Z"/>
+        <text x="25" y="200" fill="#ffd447" font-size="12">GOLD: STRUCTURE</text>
+        <text x="210" y="200" fill="#ff303d" font-size="12">RED: ENGINE CIRCUIT</text>
+        <text x="425" y="200" fill="#35ef91" font-size="12">GREEN: HYDRAULICS</text>
+      </svg>
+      <p style="font-size:11px;color:var(--muted)">Illustrative schematic only — not an engineering drawing.</p>
+    </div>
+    <div class="panel">
+      <h2>⌘ AI SYSTEM ANALYSIS</h2>
+      <div class="ai-result" id="aiResult">
+        <strong>✓ NO DEMO ANOMALIES DETECTED</strong><br>
+        All example parameters are within the configured demonstration limits.
+        <p>• Engine temperature: within demo range<br>• Fuel: sample data available<br>• Hydraulics: within demo range</p>
+        <span style="color:var(--muted);font-size:11px">Rule-based demo analysis — not certified aircraft diagnostics.</span>
+      </div>
+    </div>
+  </div>
+</section>
 
-    function setMetric(labelId, barId, value, suffix, max = 100) {
-      document.getElementById(labelId).textContent = value + suffix;
-      document.getElementById(barId).style.width =
-        Math.max(0, Math.min(100, value / max * 100)) + "%";
-    }
+<section class="content-page" id="systems">
+  <div class="panel">
+    <h2>⚙ AIRCRAFT SYSTEMS MONITOR</h2>
+    <p style="color:var(--muted);font-size:13px">Virtual system readings for educational demonstration only.</p>
+    <div class="systems">
+      <div class="panel system-card"><h3>ENGINE 1</h3><div class="value" id="sysE1">642°C</div><p class="state">Demo sensor</p></div>
+      <div class="panel system-card"><h3>ENGINE 2</h3><div class="value" id="sysE2">658°C</div><p class="state">Demo sensor</p></div>
+      <div class="panel system-card"><h3>ELECTRICAL</h3><div class="value">28.0 V</div><p class="state">Example reading</p></div>
+      <div class="panel system-card"><h3>HYDRAULICS</h3><div class="value" id="sysHyd">3,000 psi</div><p class="state">Demo sensor</p></div>
+    </div>
+  </div>
+</section>
 
-    function analyze() {
-      const issues = [];
-      if (data.engine > 850) issues.push("Engine temperature is elevated in this demo. Review the simulated engine reading.");
-      if (data.fuel < 25) issues.push("Virtual fuel quantity is low. This is a simulated threshold warning.");
-      if (data.cabin < 60) issues.push("Cabin pressure index is outside this demo's example range.");
-      if (data.electric > 90) issues.push("Simulated electrical load is high. Review the virtual subsystem.");
-      if (anomaly) issues.push("A demo anomaly has been injected. This is not a real aircraft alert.");
+<section class="content-page" id="flightdeck">
+  <div class="grid">
+    <div class="panel">
+      <h2>✈ FLIGHT DECK — SIMULATION</h2>
+      <p style="color:var(--muted);font-size:13px">Adjust the virtual demo values below. These controls have no connection to an aircraft.</p>
+      <div class="setting-row"><span>Simulated altitude</span><strong id="deckAlt">35,000 ft</strong></div>
+      <input aria-label="Simulated altitude" id="altSlider" type="range" min="10000" max="41000" step="1000" value="35000" style="width:100%;accent-color:var(--gold)">
+      <div class="setting-row"><span>Simulated airspeed</span><strong id="deckSpeed">450 kts</strong></div>
+      <input aria-label="Simulated airspeed" id="speedSlider" type="range" min="200" max="500" step="10" value="450" style="width:100%;accent-color:var(--red)">
+      <div class="setting-row"><span>Demo autopilot indicator</span><strong id="apState">STANDBY</strong></div>
+      <button class="action primary" id="apBtn" style="margin-top:14px">Toggle demo autopilot indicator</button>
+    </div>
+    <div class="panel">
+      <h2>FLIGHT DATA</h2>
+      <div class="metric-list">
+        <div class="metric"><span>Flight ID</span><strong>AX-204 (DEMO)</strong></div>
+        <div class="metric"><span>Aircraft profile</span><strong>B757-style simulation</strong></div>
+        <div class="metric"><span>Data source</span><strong>Local demo values</strong></div>
+        <div class="metric"><span>Real aircraft link</span><strong style="color:var(--red)">DISCONNECTED</strong></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-      const result = document.getElementById("analysis-result");
-      if (issues.length) {
-        result.replaceChildren();
-        const title = document.createElement("strong");
-        title.className = "red";
-        title.textContent = "● DEMO ALERT";
-        const list = document.createElement("ul");
-        issues.forEach(issue => {
-          const li = document.createElement("li");
-          li.style.marginTop = "10px";
-          li.textContent = issue;
-          list.appendChild(li);
-        });
-        result.append(title, list);
-        document.getElementById("aircraft-status").textContent = "REVIEW";
-        document.getElementById("aircraft-status").className = "metric red";
-      } else {
-        result.innerHTML = '<span class="green">● NOMINAL</span><br>Simulated values are within this demo’s example thresholds.';
-        document.getElementById("aircraft-status").textContent = "NOMINAL";
-        document.getElementById("aircraft-status").className = "metric green";
-      }
-    }
+<section class="content-page" id="analysis">
+  <div class="panel">
+    <h2>⌘ AI ANALYSIS REPORT</h2>
+    <div id="fullAnalysis" class="ai-result">Demo analysis will appear here.</div>
+    <button class="action primary" id="analyzeBtn" style="margin-top:12px">Run demo analysis</button>
+  </div>
+</section>
 
-    function render() {
-      document.getElementById("engine-temp").textContent = data.engine + "°C";
-      document.getElementById("fuel-value").textContent = data.fuel + "%";
-      document.getElementById("electrical-status").textContent =
-        data.electric > 90 ? "HIGH LOAD" : "ONLINE";
-      document.getElementById("electrical-status").className =
-        data.electric > 90 ? "metric red" : "metric green";
+<section class="content-page" id="logs">
+  <div class="panel">
+    <h2>▤ EVENT LOGS</h2>
+    <div id="logsList" class="log-list"><div class="log"><time>READY</time>AERONEX demo initialized.</div></div>
+    <button class="action" id="clearLogs" style="margin-top:12px">Clear visible logs</button>
+  </div>
+</section>
 
-      setMetric("engine-label", "engine-bar", data.engine, "°C", 1000);
-      setMetric("fuel-label", "fuel-bar", data.fuel, "%");
-      setMetric("cabin-label", "cabin-bar", data.cabin, "%");
-      setMetric("electric-label", "electric-bar", data.electric, "%");
-      document.getElementById("last-updated").textContent =
-        "Last updated " + new Date().toLocaleTimeString();
-      analyze();
-    }
+<section class="content-page" id="settings">
+  <div class="panel">
+    <h2>⚙ APPLICATION SETTINGS</h2>
+    <div class="setting-row"><span>Theme</span><strong>Black / Gold / Red</strong></div>
+    <div class="setting-row"><span>Aircraft mode</span><strong>Simulation only</strong></div>
+    <div class="setting-row"><span>Telemetry updates</span><strong>Browser demo</strong></div>
+    <div class="setting-row"><span>Account system</span><strong>Not yet connected</strong></div>
+    <div class="setting-row"><span>Cloud backend</span><strong>Not yet connected</strong></div>
+    <p style="color:var(--muted);font-size:12px;line-height:1.7">This frontend demo does not create user accounts or save settings to a server. Secure account registration and persistent storage must be implemented separately.</p>
+  </div>
+</section>
+</main>
 
-    document.getElementById("refresh-btn").addEventListener("click", () => {
-      data.engine = 620 + Math.floor(Math.random() * 160);
-      data.fuel = Math.max(20, Math.min(95, data.fuel + Math.floor(Math.random() * 7) - 3));
-      data.cabin = 75 + Math.floor(Math.random() * 20);
-      data.electric = 45 + Math.floor(Math.random() * 35);
-      anomaly = false;
-      render();
-      addLog("Demo telemetry refreshed", "gold");
-    });
+<footer>
+  <strong style="color:var(--gold)">▲ AERONEX</strong>
+  <span>Smarter Monitoring. Safer Skies.</span>
+  <span>B757-style demo · Simulation Mode · No live aircraft connection</span>
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-    document.getElementById("anomaly-btn").addEventListener("click", () => {
-      anomaly = true;
-      data.engine = 920;
-      data.electric = 96;
-      render();
-      addLog("Simulated anomaly injected — virtual data only", "red");
-    });
+<script>
+(function(){
+  "use strict";
+  const $ = id => document.getElementById(id);
+  let anomalous = false, ap = false, logCount = 0;
+  const original = {alt:35000,speed:450};
+  const logBox = $("logsList");
 
-    document.getElementById("reset-btn").addEventListener("click", () => {
-      data = { ...initial };
-      anomaly = false;
-      render();
-      addLog("Simulation reset to initial example values", "green");
-    });
+  function toast(message){
+    const t=$("toast");t.textContent=message;t.style.display="block";
+    clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.style.display="none",2800);
+  }
+  function addLog(message){
+    const row=document.createElement("div");row.className="log";
+    const time=document.createElement("time");
+    time.textContent=new Date().toLocaleTimeString();
+    row.append(time,document.createTextNode(message));
+    logBox.prepend(row);logCount++;
+    while(logBox.children.length>30)logBox.lastElementChild.remove();
+  }
+  function setStatus(id,text,color){
+    $(id).textContent=text;$(id).style.color=color;
+  }
+  function render(){
+    const alt=Number($("altSlider").value);
+    const speed=Number($("speedSlider").value);
+    $("altitude").textContent=alt.toLocaleString()+" ft";
+    $("altRead").textContent=alt.toLocaleString()+" ft";
+    $("deckAlt").textContent=alt.toLocaleString()+" ft";
+    $("speed").textContent=speed+" kts";
+    $("speedRead").textContent=speed+" kts";
+    $("deckSpeed").textContent=speed+" kts";
+    $("mach").textContent=(speed/575).toFixed(2);
+    $("heading").textContent=String((89+Math.round(Math.random()*4)-2+360)%360).padStart(3,"0")+"°";
+    $("vertical").textContent="0 ft/min";
+    const e1=anomalous?940:642,e2=anomalous?910:658,hyd=anomalous?1800:3000;
+    $("egt1").textContent=e1+"°C";$("egt2").textContent=e2+"°C";
+    $("sysE1").textContent=e1+"°C";$("sysE2").textContent=e2+"°C";
+    $("hyd").textContent=hyd.toLocaleString()+" psi";$("sysHyd").textContent=hyd.toLocaleString()+" psi";
+    $("n1").textContent=anomalous?"98%":"92%";$("n2").textContent=anomalous?"97%":"91%";
+    $("gauge1").style.setProperty("--pct",anomalous?"98%":"75%");
+    $("gauge2").style.setProperty("--pct",anomalous?"97%":"74%");
+    $("hydPct").textContent=anomalous?"60%":"100%";
+    $("hydState").textContent=anomalous?"● WARNING":"● NORMAL";
+    $("hydState").style.color=anomalous?"var(--red)":"var(--green)";
+    $("engine1state").textContent=anomalous?"● WARNING":"● NORMAL";
+    $("engine2state").textContent=anomalous?"● WARNING":"● NORMAL";
+    $("engine1state").style.color=anomalous?"var(--red)":"var(--green)";
+    $("engine2state").style.color=anomalous?"var(--red)":"var(--green)";
+    $("mainStatus").textContent=anomalous?"⚠ DEMO ANOMALY":"✓ SYSTEMS NOMINAL";
+    $("mainStatus").style.color=anomalous?"var(--red)":"var(--green)";
+    $("mainStatus").style.borderColor=anomalous?"var(--red)":"#287b48";
+    $("aiResult").innerHTML=anomalous
+      ?'<strong style="color:var(--red)">⚠ SIMULATED ANOMALY DETECTED</strong><br>Example engine temperature and hydraulic pressure have crossed the demo thresholds.<p>• Review the sample engine readings.<br>• Check the virtual hydraulic indicator.<br>• Review event logs.</p><span style="color:var(--muted);font-size:11px">Illustrative rule-based output; not real aircraft diagnostics.</span>'
+      :'<strong>✓ NO DEMO ANOMALIES DETECTED</strong><br>All example parameters are within the configured demonstration limits.<p>• Engine temperature: within demo range<br>• Fuel: sample data available<br>• Hydraulics: within demo range</p><span style="color:var(--muted);font-size:11px">Rule-based demo output; not certified diagnostics.</span>';
+    $("fullAnalysis").innerHTML=$("aiResult").innerHTML;
+  }
 
-    const pageContent = {
-      "Aircraft Systems": "This page represents virtual engine, fuel, cabin and electrical telemetry. Use the Overview buttons to refresh or reset the simulated readings. No real aircraft systems are connected.",
-      "AI Analysis": "The current demo uses simple rule-based thresholds to explain unusual generated readings. It is not a trained AI model and must not be used for operational or safety decisions.",
-      "Event Logs": "Recent actions are recorded locally in the current browser session. Refresh the page to start a fresh demo session.",
-      "About": "AERONEX is an educational aircraft-systems dashboard concept built with HTML, CSS and JavaScript. Its readings are simulated and its controls are isolated from real aircraft."
-    };
-
-    document.querySelectorAll(".nav-btn").forEach(button => {
-      button.addEventListener("click", () => {
-        document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
-        button.classList.add("active");
-        const page = button.dataset.page;
-        const overview = page === "Overview";
-        document.getElementById("overview-page").hidden = !overview;
-        document.getElementById("other-page").hidden = overview;
-        document.getElementById("page-title").textContent =
-          overview ? "Command Overview" : page;
-        document.getElementById("other-title").textContent = page;
-        document.getElementById("other-content").textContent =
-          pageContent[page] || "AERONEX educational simulation project.";
-      });
-    });
-
-    render();
-  </script>
+  document.querySelectorAll("[data-page]").forEach(btn=>btn.addEventListener("click",()=>{
+    document.querySelectorAll("[data-page]").forEach(b=>b.classList.toggle("active",b===btn));
+    document.querySelectorAll(".content-page").forEach(p=>p.classList.toggle("active",p.id===btn.dataset.page));
+    window.scrollTo({top:0,behavior:"smooth"});
+  }));
+  $("anomalyBtn").addEventListener("click",()=>{
+    anomalous=true;render();addLog("Simulated engine and hydraulic anomaly triggered.");
+    toast("Demo anomaly activated — sample values only.");
+  });
+  $("refreshBtn").addEventListener("click",()=>{
+    $("altSlider").value=35000+Math.round((Math.random()*2-1)*2000/1000)*1000;
+    $("speedSlider").value=430+Math.round(Math.random()*4)*10;
+    render();addLog("Demo telemetry refreshed with generated sample values.");
+    toast("Demo readings refreshed.");
+  });
+  $("resetBtn").addEventListener("click",()=>{
+    anomalous=false;ap=false;$("altSlider").value=original.alt;$("speedSlider").value=original.speed;
+    $("apState").textContent="STANDBY";$("apBtn").textContent="Toggle demo autopilot indicator";
+    render();addLog("Simulation reset to default sample values.");
+    toast("Simulation reset.");
+  });
+  $("altSlider").addEventListener("input",render);
+  $("speedSlider").addEventListener("input",render);
+  $("apBtn").addEventListener("click",()=>{
+    ap=!ap;$("apState").textContent=ap?"DEMO ACTIVE":"STANDBY";
+    $("apState").style.color=ap?"var(--green)":"var(--gold)";
+    $("apBtn").textContent=ap?"Turn off demo autopilot indicator":"Toggle demo autopilot indicator";
+    addLog("Demo autopilot indicator set to "+(ap?"ACTIVE":"STANDBY")+".");
+    toast("Virtual indicator changed; no aircraft is controlled.");
+  });
+  $("analyzeBtn").addEventListener("click",()=>{
+    render();addLog("Rule-based demo analysis executed.");toast("Demo analysis complete.");
+  });
+  $("clearLogs").addEventListener("click",()=>{
+    logBox.replaceChildren();logCount=0;toast("Visible event logs cleared.");
+  });
+  render();
+  addLog("AERONEX simulation interface initialized.");
+})();
+</script>
 </body>
 </html>
