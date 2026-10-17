@@ -1,0 +1,537 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090a0d">
+  <title>AERONEX | Aircraft Systems Command</title>
+  <style>
+    :root {
+      --bg: #090a0d;
+      --panel: #121419;
+      --border: #292c34;
+      --gold: #e8b84b;
+      --red: #ff4d57;
+      --text: #f2f3f5;
+      --muted: #8d929e;
+      --green: #5ee0a0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+    }
+
+    button { font: inherit; cursor: pointer; }
+
+    .layout {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 235px minmax(0, 1fr);
+    }
+
+    aside {
+      padding: 26px 16px;
+      border-right: 1px solid var(--border);
+      background: #0d0f13;
+    }
+
+    .brand {
+      font-size: 23px;
+      font-weight: 900;
+      letter-spacing: 3px;
+      color: var(--gold);
+      padding: 8px 10px 28px;
+    }
+
+    .brand small {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 9px;
+      letter-spacing: 2px;
+    }
+
+    .nav-label {
+      color: #686e7b;
+      font-size: 10px;
+      letter-spacing: 2px;
+      padding: 18px 12px 10px;
+    }
+
+    .nav-btn {
+      width: 100%;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      text-align: left;
+      padding: 12px;
+      margin: 3px 0;
+      color: #aeb3be;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 8px;
+    }
+
+    .nav-btn:hover, .nav-btn.active {
+      color: var(--gold);
+      background: #211d13;
+      border-color: #514020;
+    }
+
+    .sidebar-note {
+      margin: 36px 5px 0;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.7;
+    }
+
+    main { min-width: 0; padding: 28px clamp(16px, 3vw, 42px); }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .eyebrow {
+      color: var(--gold);
+      font-size: 10px;
+      letter-spacing: 2px;
+    }
+
+    h1 { margin: 8px 0; font-size: clamp(23px, 3vw, 34px); }
+    .subtitle { color: var(--muted); font-size: 13px; }
+
+    .demo-tag {
+      padding: 9px 12px;
+      color: var(--green);
+      background: #10251d;
+      border: 1px solid #28543f;
+      border-radius: 6px;
+      font-size: 11px;
+      letter-spacing: 1px;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin: 28px 0 14px;
+    }
+
+    h2 { margin: 0; font-size: 16px; }
+    .muted { color: var(--muted); font-size: 12px; }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .card, .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+    }
+
+    .card { padding: 17px; }
+    .card-label { color: var(--muted); font-size: 12px; }
+    .metric { margin: 14px 0 8px; font-size: 27px; font-weight: 750; }
+    .gold { color: var(--gold); }
+    .green { color: var(--green); }
+    .red { color: var(--red); }
+
+    .mini-status { font-size: 11px; color: var(--muted); }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(260px, 1fr);
+      gap: 15px;
+      margin-top: 18px;
+    }
+
+    .panel { padding: 20px; min-width: 0; }
+    .panel h2 { margin-bottom: 8px; }
+    .panel-description { color: var(--muted); font-size: 12px; line-height: 1.6; }
+
+    .aircraft {
+      position: relative;
+      overflow: hidden;
+      min-height: 245px;
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background:
+        radial-gradient(ellipse at center, #292316 0%, #15151a 42%, #101116 75%);
+      border: 1px solid #302b20;
+      border-radius: 8px;
+    }
+
+    .aircraft::before, .aircraft::after {
+      content: "";
+      position: absolute;
+      background: #26232a;
+    }
+
+    .aircraft::before {
+      width: 90%;
+      height: 1px;
+      left: 5%;
+      top: 50%;
+    }
+
+    .aircraft::after {
+      width: 1px;
+      height: 85%;
+      left: 50%;
+      top: 7%;
+    }
+
+    .plane {
+      position: relative;
+      z-index: 1;
+      font-size: 92px;
+      color: var(--gold);
+      filter: drop-shadow(0 0 20px #d8a53544);
+      transform: rotate(-90deg);
+    }
+
+    .aircraft-caption {
+      position: absolute;
+      bottom: 13px;
+      left: 14px;
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: 1px;
+    }
+
+    .system-row {
+      padding: 15px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .system-row:last-child { border-bottom: 0; }
+    .system-top { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; }
+    .bar { height: 5px; margin-top: 10px; background: #292c34; border-radius: 9px; overflow: hidden; }
+    .bar span { display: block; height: 100%; background: var(--gold); border-radius: 9px; }
+
+    .controls { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+
+    .action {
+      border: 1px solid #665026;
+      background: #241e12;
+      color: var(--gold);
+      padding: 10px 13px;
+      border-radius: 6px;
+      font-size: 12px;
+    }
+
+    .action:hover { background: #362b16; }
+    .action.secondary { color: var(--text); border-color: var(--border); background: #17191f; }
+
+    .log {
+      margin-top: 18px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .log:last-child { border-bottom: 0; }
+    .log time { display: block; color: var(--muted); font-size: 10px; }
+    .footer { margin: 26px 0 6px; color: #737986; font-size: 10px; line-height: 1.7; }
+
+    @media (max-width: 1000px) {
+      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .content-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 650px) {
+      .layout { grid-template-columns: 1fr; }
+      aside { padding: 12px; border-right: 0; border-bottom: 1px solid var(--border); }
+      .brand { padding-bottom: 10px; }
+      .nav-label, .sidebar-note { display: none; }
+      nav { display: flex; gap: 5px; overflow-x: auto; }
+      .nav-btn { width: auto; flex: 0 0 auto; padding: 10px; }
+      main { padding: 20px 14px; }
+      .cards { gap: 9px; }
+      .card { padding: 13px; }
+      .metric { font-size: 23px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside>
+      <div class="brand">AERONEX<small>AVIATION SYSTEMS LAB</small></div>
+
+      <div class="nav-label">COMMAND</div>
+      <nav aria-label="Main navigation">
+        <button class="nav-btn active" data-page="Overview">◈ Overview</button>
+        <button class="nav-btn" data-page="Aircraft Systems">✈ Aircraft Systems</button>
+        <button class="nav-btn" data-page="AI Analysis">⌘ AI Analysis</button>
+        <button class="nav-btn" data-page="Event Logs">≡ Event Logs</button>
+      </nav>
+
+      <div class="nav-label">PROJECT</div>
+      <nav aria-label="Project navigation">
+        <button class="nav-btn" data-page="About">ⓘ About AERONEX</button>
+      </nav>
+
+      <div class="sidebar-note">
+        <span class="gold">● SIMULATION MODE</span><br>
+        All readings and controls are virtual demo data. No real aircraft connection.
+      </div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">AIRCRAFT OPERATIONS / DEMO ENVIRONMENT</div>
+          <h1 id="page-title">Command Overview</h1>
+          <div class="subtitle">Aircraft systems monitoring and simulated anomaly insights.</div>
+        </div>
+        <div class="demo-tag">● OFFLINE DEMO</div>
+      </header>
+
+      <section id="overview-page">
+        <div class="section-title">
+          <h2>System Overview</h2>
+          <span class="muted" id="last-updated">Demo data initialized</span>
+        </div>
+
+        <div class="cards">
+          <article class="card">
+            <div class="card-label">Aircraft Status</div>
+            <div class="metric green" id="aircraft-status">NOMINAL</div>
+            <div class="mini-status">Virtual aircraft ANX-01</div>
+          </article>
+          <article class="card">
+            <div class="card-label">Engine Temperature</div>
+            <div class="metric" id="engine-temp">680°C</div>
+            <div class="mini-status">Simulated sensor reading</div>
+          </article>
+          <article class="card">
+            <div class="card-label">Fuel Quantity</div>
+            <div class="metric" id="fuel-value">74%</div>
+            <div class="mini-status">Virtual tank estimate</div>
+          </article>
+          <article class="card">
+            <div class="card-label">Electrical Bus</div>
+            <div class="metric green" id="electrical-status">ONLINE</div>
+            <div class="mini-status">Simulated power system</div>
+          </article>
+        </div>
+
+        <div class="content-grid">
+          <section class="panel">
+            <h2>Aircraft Systems Monitor</h2>
+            <div class="panel-description">Illustrative aircraft graphic and virtual subsystem readings.</div>
+
+            <div class="aircraft">
+              <div class="plane" aria-label="Aircraft symbol">✈</div>
+              <div class="aircraft-caption">ANX-01 / VIRTUAL TEST PLATFORM</div>
+            </div>
+
+            <div class="controls">
+              <button class="action" id="refresh-btn">↻ Refresh Demo Data</button>
+              <button class="action secondary" id="anomaly-btn">⚠ Simulate Anomaly</button>
+              <button class="action secondary" id="reset-btn">Reset Simulation</button>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>Subsystem Telemetry</h2>
+            <div class="panel-description">Generated values for demonstration only.</div>
+
+            <div class="system-row">
+              <div class="system-top"><span>Engine temperature</span><strong id="engine-label">680°C</strong></div>
+              <div class="bar"><span id="engine-bar" style="width:68%"></span></div>
+            </div>
+            <div class="system-row">
+              <div class="system-top"><span>Fuel quantity</span><strong id="fuel-label">74%</strong></div>
+              <div class="bar"><span id="fuel-bar" style="width:74%"></span></div>
+            </div>
+            <div class="system-row">
+              <div class="system-top"><span>Cabin pressure index</span><strong id="cabin-label">82%</strong></div>
+              <div class="bar"><span id="cabin-bar" style="width:82%"></span></div>
+            </div>
+            <div class="system-row">
+              <div class="system-top"><span>Electrical load</span><strong id="electric-label">61%</strong></div>
+              <div class="bar"><span id="electric-bar" style="width:61%"></span></div>
+            </div>
+          </section>
+        </div>
+
+        <div class="content-grid">
+          <section class="panel">
+            <h2>AI-Style System Analysis</h2>
+            <div class="panel-description">Rule-based demo explanations; not certified aircraft diagnostics.</div>
+            <div id="analysis-result" class="log">
+              <span class="green">● NOMINAL</span><br>
+              Simulated values are within this demo's example thresholds.
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>Recent Event Logs</h2>
+            <div class="panel-description">Activity generated inside this browser demo.</div>
+            <div id="event-logs">
+              <div class="log"><span class="green">SYSTEM READY</span><time>Startup · Demo environment</time></div>
+              <div class="log">Telemetry dashboard initialized<time>Initial event</time></div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section id="other-page" class="panel" hidden style="margin-top:24px">
+        <h2 id="other-title">Project Information</h2>
+        <div id="other-content" class="panel-description" style="margin-top:14px"></div>
+      </section>
+
+      <footer class="footer">
+        AERONEX is an educational frontend simulation. It does not connect to aircraft, avionics, flight-control systems, or live operational data. Never use this demo for real-world flight decisions.
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    const initial = { engine: 680, fuel: 74, cabin: 82, electric: 61 };
+    let data = { ...initial };
+    let anomaly = false;
+    const logs = document.getElementById("event-logs");
+
+    function addLog(message, type = "") {
+      const item = document.createElement("div");
+      item.className = "log";
+      const label = document.createElement("span");
+      label.textContent = message;
+      if (type) label.className = type;
+      const time = document.createElement("time");
+      time.textContent = new Date().toLocaleTimeString() + " · Browser demo";
+      item.append(label, time);
+      logs.prepend(item);
+      while (logs.children.length > 6) logs.lastElementChild.remove();
+    }
+
+    function setMetric(labelId, barId, value, suffix, max = 100) {
+      document.getElementById(labelId).textContent = value + suffix;
+      document.getElementById(barId).style.width =
+        Math.max(0, Math.min(100, value / max * 100)) + "%";
+    }
+
+    function analyze() {
+      const issues = [];
+      if (data.engine > 850) issues.push("Engine temperature is elevated in this demo. Review the simulated engine reading.");
+      if (data.fuel < 25) issues.push("Virtual fuel quantity is low. This is a simulated threshold warning.");
+      if (data.cabin < 60) issues.push("Cabin pressure index is outside this demo's example range.");
+      if (data.electric > 90) issues.push("Simulated electrical load is high. Review the virtual subsystem.");
+      if (anomaly) issues.push("A demo anomaly has been injected. This is not a real aircraft alert.");
+
+      const result = document.getElementById("analysis-result");
+      if (issues.length) {
+        result.replaceChildren();
+        const title = document.createElement("strong");
+        title.className = "red";
+        title.textContent = "● DEMO ALERT";
+        const list = document.createElement("ul");
+        issues.forEach(issue => {
+          const li = document.createElement("li");
+          li.style.marginTop = "10px";
+          li.textContent = issue;
+          list.appendChild(li);
+        });
+        result.append(title, list);
+        document.getElementById("aircraft-status").textContent = "REVIEW";
+        document.getElementById("aircraft-status").className = "metric red";
+      } else {
+        result.innerHTML = '<span class="green">● NOMINAL</span><br>Simulated values are within this demo’s example thresholds.';
+        document.getElementById("aircraft-status").textContent = "NOMINAL";
+        document.getElementById("aircraft-status").className = "metric green";
+      }
+    }
+
+    function render() {
+      document.getElementById("engine-temp").textContent = data.engine + "°C";
+      document.getElementById("fuel-value").textContent = data.fuel + "%";
+      document.getElementById("electrical-status").textContent =
+        data.electric > 90 ? "HIGH LOAD" : "ONLINE";
+      document.getElementById("electrical-status").className =
+        data.electric > 90 ? "metric red" : "metric green";
+
+      setMetric("engine-label", "engine-bar", data.engine, "°C", 1000);
+      setMetric("fuel-label", "fuel-bar", data.fuel, "%");
+      setMetric("cabin-label", "cabin-bar", data.cabin, "%");
+      setMetric("electric-label", "electric-bar", data.electric, "%");
+      document.getElementById("last-updated").textContent =
+        "Last updated " + new Date().toLocaleTimeString();
+      analyze();
+    }
+
+    document.getElementById("refresh-btn").addEventListener("click", () => {
+      data.engine = 620 + Math.floor(Math.random() * 160);
+      data.fuel = Math.max(20, Math.min(95, data.fuel + Math.floor(Math.random() * 7) - 3));
+      data.cabin = 75 + Math.floor(Math.random() * 20);
+      data.electric = 45 + Math.floor(Math.random() * 35);
+      anomaly = false;
+      render();
+      addLog("Demo telemetry refreshed", "gold");
+    });
+
+    document.getElementById("anomaly-btn").addEventListener("click", () => {
+      anomaly = true;
+      data.engine = 920;
+      data.electric = 96;
+      render();
+      addLog("Simulated anomaly injected — virtual data only", "red");
+    });
+
+    document.getElementById("reset-btn").addEventListener("click", () => {
+      data = { ...initial };
+      anomaly = false;
+      render();
+      addLog("Simulation reset to initial example values", "green");
+    });
+
+    const pageContent = {
+      "Aircraft Systems": "This page represents virtual engine, fuel, cabin and electrical telemetry. Use the Overview buttons to refresh or reset the simulated readings. No real aircraft systems are connected.",
+      "AI Analysis": "The current demo uses simple rule-based thresholds to explain unusual generated readings. It is not a trained AI model and must not be used for operational or safety decisions.",
+      "Event Logs": "Recent actions are recorded locally in the current browser session. Refresh the page to start a fresh demo session.",
+      "About": "AERONEX is an educational aircraft-systems dashboard concept built with HTML, CSS and JavaScript. Its readings are simulated and its controls are isolated from real aircraft."
+    };
+
+    document.querySelectorAll(".nav-btn").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+        button.classList.add("active");
+        const page = button.dataset.page;
+        const overview = page === "Overview";
+        document.getElementById("overview-page").hidden = !overview;
+        document.getElementById("other-page").hidden = overview;
+        document.getElementById("page-title").textContent =
+          overview ? "Command Overview" : page;
+        document.getElementById("other-title").textContent = page;
+        document.getElementById("other-content").textContent =
+          pageContent[page] || "AERONEX educational simulation project.";
+      });
+    });
+
+    render();
+  </script>
+</body>
+</html>
