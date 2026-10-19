@@ -18,10 +18,11 @@ app = FastAPI(
 # The public GitHub Pages site will be connected separately later.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5500",
-        "http://127.0.0.1:5500",
-    ],
+  allow_origins=[
+    "http://localhost:5500",
+    "http://127.0.0.1:5500",
+    "https://dhikshit08.github.io",
+],
     allow_credentials=False,
     allow_methods=["GET", "POST"],
     allow_headers=["Content-Type"],
